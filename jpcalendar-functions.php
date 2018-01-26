@@ -270,8 +270,6 @@ class JPCalendar{
   }
   
   public function create_edit_event(){
-  ///TODO: add variable to store recurrence check.
-  //TODO: if true, follow existing flow, if false, create a flow that sets those to null
   //TODO: if event end time is not selected, set to null
     global $wpdb;
 
