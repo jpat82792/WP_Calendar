@@ -288,8 +288,6 @@ class JPCalendar{
     $end_time = $event_end_time_hour . ':' . $event_end_time_minute;
     $event_start_date = $_POST['date'];
     $event_recurrence_check = boolval($_POST['recurrence']);
-    error_log('Recurrence Check: ');
-    error_log($_POST['recurrence']);
     $event_end_date= $_POST['end_date'];
     $event_recurrence = $_POST['recurrence_type'];
     $placeholder_array = array('%s','%s','%s','%s','%s','%s','%s','%s');
