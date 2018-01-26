@@ -287,16 +287,25 @@ class JPCalendar{
     $start_time =$event_start_time_hour . ':' . $event_start_time_minute;
     $end_time = $event_end_time_hour . ':' . $event_end_time_minute;
     $event_start_date = $_POST['date'];
+    $event_recurrence_check = boolval($_POST['recurrence']);
+    error_log('Recurrence Check: ');
+    error_log($_POST['recurrence']);
     $event_end_date= $_POST['end_date'];
     $event_recurrence = $_POST['recurrence_type'];
-    $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>$event_recurrence, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => $event_end_date, 'event_importance'=>$importance);
+    $placeholder_array = array('%s','%s','%s','%s','%s','%s','%s','%s');
+    if($event_recurrence_check){
+      $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>$event_recurrence, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => $event_end_date, 'event_importance'=>$importance);
+    }
+    else{
+      $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>null, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => $event_end_date, 'event_importance'=>$importance);
+    }
     $events_table_name = $wpdb->prefix . 'jpcalendar_events';
     if(!is_int($event_id)){
-      $wpdb->insert($events_table_name, $event, array('%s','%s','%s','%s','%s','%s','%s','%s'));
+      $wpdb->insert($events_table_name, $event, $placeholder_array);
       wp_redirect(admin_url('admin.php?page=calendar&tab=create_event'));
     }
     else{
-      $wpdb->update($events_table_name, $event, array('event_id'=>$event_id) ,array('%s','%s','%s','%s','%s','%s','%s','%s'));
+      $wpdb->update($events_table_name, $event, array('event_id'=>$event_id), $placeholder_array);
       wp_redirect(admin_url('admin.php?page=calendar&tab=create_event'));
     }
   }
