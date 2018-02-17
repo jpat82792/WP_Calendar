@@ -293,7 +293,7 @@ class JPCalendar{
       $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>$event_recurrence, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => $event_end_date, 'event_importance'=>$importance);
     }
     else{
-      $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>null, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => $event_end_date, 'event_importance'=>$importance);
+      $event = array('event_title'=>$event_title, 'event_description'=>$event_description,'event_start_time'=> $start_time, 'event_end_time'=>$end_time, 'recursion'=>null, 'event_category_id'=>$category_id, 'event_start_date'=>$event_start_date, 'event_end_date' => null, 'event_importance'=>$importance);
     }
     $events_table_name = $wpdb->prefix . 'jpcalendar_events';
     if(!is_int($event_id)){
@@ -504,21 +504,40 @@ class JPCalendar{
     $categories = $this->admin_get_categories($event_count, $page_number);
     ?>
       <h1 style="display:block; float=left;">Category List</h1>
-      <div style="float:left; width:100%;">
+      <table style="width:100%; float:left; border: 0.5px solid black">
+      <tr style="text-align:left; font-size:20px; ">
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Category name</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Category description</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Delete Category</th>
+      </tr>
         <?php 
         foreach($categories as $category){      
         ?>
-        <a href="?page=calendar&tab=create_category&category_id=<?php echo($category->category_id); ?>">
-        <h3 style="float:left; width:10%; display:inline-block;"><?php echo($category->category_title); ?></h3>
-        </a>
-        <form action="<?php echo(admin_url('admin-post.php')); ?>" method="POST">
-          <input type="hidden" name="action" value="delete_category"/>
-          <input type="hidden" name="category_id" value="<?php echo($category->category_id); ?>">
-          <button type="submit" style="display:block;">Delete events</button>
-        </form>
-      </div>
+        <tr>
+          <td style="font-size:18px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <a href="?page=calendar&tab=create_category&category_id=<?php echo($category->category_id); ?>">
+                <?php echo($category->category_title); ?>
+            </a>
+          </td>
+         <td style="font-size:16px;padding:10px 0px; border-bottom: 0.5px solid black;">
+          <?php echo($category->category_description); ?>   
+         </td>
+          <td  style="font-size:18px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <form action="<?php echo(admin_url('admin-post.php')); ?>" method="POST">
+              <input type="hidden" name="action" value="delete_category"/>
+              <input type="hidden" name="category_id" value="<?php echo($category->category_id); ?>">
+              <button type="submit" style="display:block;">
+                Delete <?php echo($category->category_title); ?>
+              </button>
+            </form>
+          </td>
+        </tr>
+
     <?php 
-      }
+      }    
+    ?>
+      </table>
+ <?php
     }
     if($active_tab == 'eventlist'){
       $event_count = isset( $_GET['countjpcalendar'] ) ? $_GET['countjpcalendar'] : 30;
@@ -528,29 +547,63 @@ class JPCalendar{
       $previous_page_number = ((int) $page_number) - 1;
     ?>
       
-      <h1 style="display:block; float:left;">Event List</h1> 
-      <div> 
+      <h1 style="display:block; float:left; width:100%;">Event List</h1> 
+      <table style="width:100%; float:left; border: 0.5px solid black">
+      <tr style="text-align:left; font-size:20px; ">
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Event name</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Event start date</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Event start time</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Event description</th>
+        <th style="padding:10px 0px; border-bottom: 0.5px solid black;">Delete Event?</th>
+      </tr>
       <?php 
         $events = $this->admin_get_events($event_count, $page_number); 
         foreach($events as $event){
           ?>
-        <div style="float:left; width:100%;">
-          <a href="?page=calendar&tab=create_event&event_id=<?php echo($event->event_id); ?>">
-          <h3 style="float:left; width:10%; display:inline-block;">
-            <?php echo($event->event_title); ?>
-          </h3>
+        <tr>
+
+          <td style="font-size:18px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <a href="?page=calendar&tab=create_event&event_id=<?php echo($event->event_id); ?>">
+              <?php echo($event->event_title); ?>
+            </a>
+          </td>
+          <td style="font-size:18px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <?php echo($event->event_start_date); ?>
+          </td>
+          <td style="font-size:18px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <?php echo($event->event_start_time); ?>
+          </td>
+          <td style="overflow:hidden; font-size:16px;padding:10px 0px; border-bottom: 0.5px solid black;">
+            <?php echo($event->event_description); ?>
+          </td>
+          <td>
           <form action="<?php echo(admin_url('admin-post.php')); ?>" method="POST">
             <input type="hidden" name="action" value="delete_event"/>
             <input type="hidden" name="event_id" value="<?php echo($event->event_id); ?>">
-            <button type="submit" style="display:block;">Delete events</button>
+            <button type="submit" style="display:block;">
+              Delete <?php echo($event->event_title); ?>
+            </button>
           </form>
-        </div>
+          </td>
+        </tr>
       <?php
         }      
       ?>
+      </table>
+      <div style="float:left; width:100%;">
+        <?php if($previous_page_number == -1){}
+        else{
+        ?>
+        <a style="float:left;" href="?page=calendar&tab=eventlist&countjpcalendar=10&pagejpcalendar=<?php echo($previous_page_number); ?>">
+        Back
+        </a>
+        <?php 
+          }
+        ?>
+        <a style="float:right;" href="?page=calendar&tab=eventlist&countjpcalendar=10&pagejpcalendar=<?php echo($next_page_number); ?>">
+          Next
+        </a>
       </div>
-      <a style="float:left; width:100%;" href="?page=calendar&tab=eventlist&countjpcalendar=1&pagejpcalendar=<?php echo($previous_page_number); ?>">Back</a>
-      <a style="float:left; width:100%;" href="?page=calendar&tab=eventlist&countjpcalendar=1&pagejpcalendar=<?php echo($next_page_number); ?>">Next</a>
     <?php
     }
     ?>

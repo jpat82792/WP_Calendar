@@ -32,7 +32,7 @@ let hideCalendarNavigation = function(){
 
 let selectMonth = function(element, monthComponent, yearComponent, eventComponent){
   console.log('selectMonth');
-changeCalendarNavigationMonth();
+  changeCalendarNavigationMonth();
   showCalendarNavigation();
   let statusBarBack = document.getElementById('calendar-back-button');
   statusBarBack.classList.remove('display-none');
@@ -105,7 +105,7 @@ let nextPrevWeek = function(button, monthComponent){
     }
   }
 }
-
+/*
 let selectWeek = function(element){
   console.log('selectWeek()');
   console.log(element);
@@ -113,7 +113,7 @@ let selectWeek = function(element){
   let weekDays = element.parentNode.querySelectorAll('[class="selected-day"]');
   for(var i = 0; i < weekDays.length;i++){
     weekDays[i].classList.remove('selected-day');
-    weekDays[i].className += 'unselected-day';
+    weekDays[i].classList.add('unselected-day');
   }
   element.children[0].classList.remove('unselected-day');
   element.children[0].className += 'selected-day';
@@ -145,11 +145,11 @@ let selectWeek = function(element){
     }
   }
   setBackToMonth(parentElement);
-}
+}*/
 let backToMonth = function(parentElement, firstParent){
   console.log("backToMonth()");
-changeCalendarNavigationMonth();
-let nextWeekButton = document.getElementById('calendar-next');
+  changeCalendarNavigationMonth();
+  let nextWeekButton = document.getElementById('calendar-next');
   let prevWeekButton = document.getElementById('calendar-prev');
   nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
   prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};
@@ -161,17 +161,21 @@ let nextWeekButton = document.getElementById('calendar-next');
     selectedDays[i].classList.remove('selected-day');
     selectedDays[i].className += 'unselected-day';
   }
-  /*let navigationBar = document.getElementById('calendar-navigation-bar');
+  /*
+  let navigationBar = document.getElementById('calendar-navigation-bar');
   navigationBar.classList.remove('active-navigation-bar');
-  navigationBar.className += ' inactive-navigation-bar';*/
+  navigationBar.className += ' inactive-navigation-bar';
+  */
   let parentChildren = parentElement.children;
   for(var child = 0; child < parentChildren.length; child++){
     parentChildren[child].style = "";
   }
   let calendarOverviewComponent = document.getElementById('calendar-overview-widget');
   let calendarMonthComponent = document.getElementById('calendar-widget');
+  /*
   let statusBarBack = document.getElementById('calendar-back-button');
   statusBarBack.onclick = function(){goBackToYear(calendarMonthComponent, calendarOverviewComponent);};
+  */
   changeEventsMonth(calendarMonthComponent.querySelector('[class="month"]'));
 }
 
@@ -180,13 +184,9 @@ let setBackToMonth = function(parentElement){
   console.log('setBackToMonth');
   let calendarMonthComponent = document.getElementById('calendar-widget');
   let statusBarBack = document.getElementById('calendar-back-button');
+  console.log(statusBarBack);
   statusBarBack.onclick = function(){return false};
   statusBarBack.onclick = function(){backToMonth(parentElement);};
-  /*let nextWeekButton = document.getElementById('calendar-next');
-  let prevWeekButton = document.getElementById('calendar-prev');
-  nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
-  prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};*/
-
 }
 
 let goBackToYear = function(monthComponent, yearComponent, eventComponent){
@@ -207,7 +207,6 @@ let goBackToYear = function(monthComponent, yearComponent, eventComponent){
   let statusBarBack = document.getElementById('calendar-back-button');
   statusBarBack.classList.remove('display-none');
   statusBarBack.className += ' display-none';
-
 }
 
 let initTransitionController = function(){
@@ -215,28 +214,29 @@ let initTransitionController = function(){
   let calendarOverviewComponent = document.getElementById('calendar-overview-widget');
   let calendarMonthComponent = document.getElementById('calendar-widget');
   let eventComponent = document.getElementById('event-widget');
-  for(var month = 0; month < calendarOverviewComponent.children.length; month++){
+  /*for(var month = 0; month < calendarOverviewComponent.children.length; month++){
     let temp = calendarOverviewComponent.children[month];
     temp.onclick = function(){selectMonth(this, calendarMonthComponent, calendarOverviewComponent, eventComponent)};
-  }
-  let statusBarBack = document.getElementById('calendar-back-button');
-  statusBarBack.onclick = function(){ 
+  }*/
+  /*let statusBarBack = document.getElementById('calendar-back-button');
+  /*statusBarBack.onclick = function(){ 
     goBackToYear(calendarMonthComponent, calendarOverviewComponent, eventComponent);
-  };
-  statusBarBack.classList.remove('display-none');
-  statusBarBack.className += ' display-none';
+  };*/
+  /*statusBarBack.classList.remove('display-none');
+  statusBarBack.className += ' display-none';*/
   let days = calendarMonthComponent.querySelectorAll('[class="calendar-day"]');
-  for(var day = 0; day < days.length; day++){
+  
+  /*for(var day = 0; day < days.length; day++){
     days[day].onclick = function(){
       selectWeek(this);
     }
-  }
+  }*/
   let calendarNavigationBar = document.getElementById('calendar-navigation-bar');
-  calendarNavigationBar.className += ' display-none';
+ // calendarNavigationBar.className += ' display-none';
 
   let nextWeekButton = document.getElementById('calendar-next');
   let prevWeekButton = document.getElementById('calendar-prev');
-  hideCalendarNavigation();
+  //hideCalendarNavigation();
   nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
   prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};
 }

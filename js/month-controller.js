@@ -1,6 +1,6 @@
 console.log('month-controller.js');
 //TODO: add error handling to prevent TypeError when user clicks beyond currently loaded calendar months
-let months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september','october','november','december'];
+let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September','October','November','December'];
 let monthsAbbreviations = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
 let changeMonth = function(monthCalendar, direction){
@@ -19,15 +19,43 @@ let changeMonth = function(monthCalendar, direction){
 
 }
 
+var nextMonthOffset = function(index){
+  if(index < 11){
+    return index+1;
+  }
+  else{
+    return 0;
+  }
+}
+var prevMonthOffset = function(index){
+  if(index > 0){
+    return index-1;
+  }
+  else{
+    return 11;
+  }
+}
+
 let changeMonthLabel = function(monthNumber){
   let statusBar = document.getElementById('calendar-status-bar');
   let statusBarBack = document.getElementById('calendar-back-button');
-  let statusBarLabel = document.getElementById('calendar-status-bar-label');
+  let monthLabel = document.querySelector('div[class="current-month-label"]');
+//  let statusBarLabel = document.getElementById('calendar-status-bar-label');
   for(var monthId = 0; monthId < months.length; monthId++){
     if((monthId+1) === parseInt(monthNumber)){
-      statusBarLabel.textContent = months[monthId];
+      //statusBarLabel.textContent = months[monthId];
       let label = document.querySelector('[class="calendar-navigation-bar-label"]');
-      label.textContent = 'today';
+      var nextButton = document.getElementById('calendar-next');
+      var prevButton = document.getElementById('calendar-prev');
+      var eventLabel = document.querySelector('[class="event-status-label"]');
+      console.log(eventLabel);
+
+      var tempText = 'events in '+months[monthId];
+      monthLabel.textContent = months[monthId]; 
+      eventLabel.textContent = tempText;
+      prevButton.textContent = months[prevMonthOffset(monthId)];
+      nextButton.textContent = months[nextMonthOffset(monthId)];
+      label.textContent = months[monthId];
     }
   }
 }

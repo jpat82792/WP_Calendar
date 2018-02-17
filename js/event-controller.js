@@ -15,26 +15,26 @@ let changeEventsLabel = function(keyword, eventLabel){
 
 let changeEventsMonth = function(month){
   console.log('changeEventsMonth()');
-  let eventContainer = document.getElementById('event-widget');
+  let eventContainer = document.getElementById('event-widget');  
   let currentYear = month.dataset.year;
   let currentMonth = month.dataset.month;
   let events = eventContainer.children;
-  for(var i = 0;i < events.length; i++ ){
+  for(var i = 0; i < events.length; i++ ){
     if (i !== 0){
       let temp = events[i];
       if((parseInt(currentMonth) === parseInt(temp.dataset.month)) && (parseInt(currentYear) === parseInt(temp.dataset.year))){
         temp.classList.remove('active-event');
         temp.classList.remove('inactive-event');
-        temp.className += ' active-event';
+        temp.classList.add('active-event');
       }
       else{
         temp.classList.remove('active-event');
         temp.classList.remove('inactive-event');
-        temp.className += ' inactive-event';
+        temp.classList.add('inactive-event');
       }
     }
     else{
-      changeEventsLabel('month', events[i]);
+     // changeEventsLabel('month', events[i]);
     }
   }
 }
@@ -43,32 +43,38 @@ let changeEventsWeek = function(week, element){
   console.log("changeEventsWeek()");
   let eventContainer = document.getElementById('event-widget');
   let events = week.querySelectorAll('[data-event]');
+  console.log(events);
   changeEventsLabel('week', eventContainer.children[0]);
   let allEvents = eventContainer.children;
   var atSelectedDay = false;
   for(var i = 0 ; i < allEvents.length; i++){
     if(i !== 0){
-      allEvents[i].className = 'inactive-event';
+      allEvents[i].classList.remove('active-event');
+      allEvents[i].classList.remove('inactive-event');
+      allEvents[i].classList.add('inactive-event');
     }
   }
   for(var i = 0 ; i < events.length; i++){
     let temp = events[i];
-    if(element === events[i].parentNode){
-      console.log('Found the day');
-      atSelectedDay = true;
-    }
-    else{
-      console.log('nope, no day');
-    }
+    atSelectedDay = true
     if(week === events[i].parentNode || atSelectedDay){
       let workArray = temp.dataset.event.split(', ');
       console.log("workArray");
       console.log(workArray);
       for(var j = 0; j < workArray.length; j++){
-        let eventInfo = eventContainer.querySelector('[data-event="'+workArray[j]+'"]');
+        var workTemp = workArray[j].split(',');
+        console.log('temp');
+        console.log(workTemp[0].split('(')[1]);
+        console.log('[data-event="'+workTemp[0].split('(')[1]+'"]');
+        var eventInfo = eventContainer.querySelector('[data-event="'+workTemp[0].split('(')[1]+'"]');
         if(eventInfo !== null){
           eventInfo.classList.remove('active-event');
-          eventInfo.className += ' active-event';
+          eventInfo.classList.add('active-event');
+          console.log(eventInfo);
+          console.log('eventInfo is not null');
+        }
+        else{
+          console.log("eventInfo is null");
         }
       }  
     }
@@ -105,8 +111,6 @@ let selectEvent = function(event){
   let eventImportance = event.dataset.eventImportance;
   let dayLabelClass = setDayLabelBackground(eventImportance);
   
-
-
   let eventDropdown = document.getElementById('event-details-dropdown');
   let eventDayContainer = document.getElementById('dropdown-event-day');
   let eventMonthContainer = document.getElementById('dropdown-event-month');
