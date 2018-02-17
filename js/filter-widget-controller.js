@@ -66,158 +66,16 @@ let filterImportances = function(selectedImportance){
 
 let filterImportanceEvents = function(importance){
   console.log('filterEventImportances()');
-
-  var baseFilterController = document.getElementById('base-filter-controller');
-  baseFilterController.dataset.importance = importance;
+  updateBaseFilterController('importance', importance);
   let events = document.getElementById('event-widget').children;
-
-  for(var i = 0 ; i < events.length; i++){
-    if(i !== 0){
-      if(importance !== 'all'){
-        if(!(events[i].dataset.eventImportance ===importance) ){
-          events[i].classList.remove('inactive-event-importance');
-          events[i].classList.add('inactive-event-importance');
-        }
-        else{
-          events[i].classList.remove('inactive-event-importance');
-        }
-      }
-      else{
-        console.log('okay??');
-        events[i].classList.remove('inactive-event-importance');
-      }
-    }
-  }
-
+  setEvents('inactive-event-importance', 'eventImportance', importance);
   let days = document.getElementById('calendar-widget').querySelectorAll('[data-event]');
-  var daysEvents = [];
-  for(var i =0; i< days.length; i++){
-    daysEvents[i] = days[i].dataset.event.split(', ');
-    for(var j = 0 ; j < daysEvents[i].length; j++){
-      var temp = daysEvents[i][j];
-      temp = temp.replace('(', '');
-      temp = temp.replace(')', '');
-      temp = temp.split(',');
-      daysEvents[i][j] = {};
-      daysEvents[i][j].event = temp[0];
-      daysEvents[i][j].category = temp[1];
-      daysEvents[i][j].importance = temp[2];
-    }
-  }
-
-  for(var i = 0 ; i < days.length;i++){
-    let actualDay = days[i];
-    var interestingImportance = false;
-    var recommendedImportance = false;
-    var requiredImportance = false;
-    for(var j = 0 ; j < daysEvents[i].length; j++){
-      console.log(i)
-      console.log(daysEvents[i][j].category);
-      console.log(baseFilterController.dataset.category);
-      if(daysEvents[i][j].category === baseFilterController.dataset.category || baseFilterController.dataset.category === 'all'){
-        console.log('Do I get here?');
-        if(('required' === importance)){
-          requiredImportance = true;
-        }
-        if ('recommended'===importance){
-          recommendedImportance = true;
-        }
-        if('interesting' === importance){
-          interestingImportance = true;
-        }
-        if('all' === importance){
-          requiredImportance = true;
-          recommendedImportance = true;
-          interestingImportance = true;
-        }
-      }
-    }
-    updateImportances(interestingImportance, recommendedImportance, requiredImportance, days[i]);
-  }  
+  var daysEvents = getDaysEvents(days);
+  checkDayForImportances(days, daysEvents);
+  dismissImportanceFilterDropdown();
 }
 
-
-let filterCategories = function(selectedCategory){
-  console.log('filterCategories()');
-  let categoryId = selectedCategory.dataset.categoryId
-  filterCategoryEvents(categoryId, selectedCategory);
-}
-
-let updateImportances = function(interesting, recommended, required, day){
-  console.log('updateImportances()');
-
-  var dayData = day.dataset.event.split(',');
-  var dayCategory = dayData[1];
-  var dayImportance = dayData[2].split(')')[0];
-  
-  var baseFilterController = document.getElementById('base-filter-controller');
-  var currentCategory = baseFilterController.dataset.category;
-  currentImportance = baseFilterController.dataset.importance;
-
-  let eventMarkerContainer = day.nextElementSibling;
-  for(var i = 0 ; i < eventMarkerContainer.children.length ;i++ ){
-    let temp = eventMarkerContainer.children[i];
-    temp.classList.remove('unselected-event-marker');
-  }
-
-
-  if(!interesting){
-    let marker = eventMarkerContainer.getElementsByClassName('event-marker interesting');
-    if(marker[0] === undefined){
-
-    }
-    else{
-      marker[0].classList.add('unselected-event-marker');
-    }
-  }
-
-  if(!recommended){
-    let marker = eventMarkerContainer.getElementsByClassName('event-marker recommended');
-    if(marker[0] === undefined){
-
-    }
-    else{
-      marker[0].classList.add('unselected-event-marker');
-    }
-  }
-
-  if(!required ){
-    let marker = eventMarkerContainer.getElementsByClassName('event-marker required');
-    if(marker[0] === undefined){
-
-    }
-    else{
-      marker[0].classList.add('unselected-event-marker');
-    }
-  }
-}
-
-
-
-let filterCategoryEvents = function(categoryId, element){
-  console.log('filterCategoryEvents()');
-  console.log(element.textContent);
-  let baseFilterController = document.getElementById('base-filter-controller');
-  baseFilterController.dataset.category = categoryId;
-  let currentClassLabel = document.getElementById('category-filter-button');
-  currentClassLabel.children[0].textContent = element.textContent;
-  let events = document.getElementById('event-widget').children;
-  for(var i = 0 ; i < events.length;i++){
-    if(categoryId !== 'all'){
-      if(events[i].dataset.categoryId === categoryId || i === 0){
-        events[i].classList.remove('unselectable-event');
-      }
-      else{
-        events[i].classList.remove('unselectable-event');
-        events[i].className += ' unselectable-event';
-      }
-    }
-    else{
-      events[i].classList.remove('unselectable-event');
-    }
-  }
-  //TODO: remove any unecessary event markers in month
-  let days = document.getElementById('calendar-widget').querySelectorAll('[data-event]');
+var getDaysEvents = function(days){
   var daysEvents = [];
   //This loop will get all the event objects per day
   for (var i = 0 ; i < days.length; i++){
@@ -233,23 +91,32 @@ let filterCategoryEvents = function(categoryId, element){
       daysEvents[i][j].importance = temp[2];
     }
   }
+  return daysEvents;
+}
+
+var checkDayForImportances = function(days, daysEvents){
+  console.log("checkDayForImportances()");
+  let baseFilterController = document.getElementById('base-filter-controller');
+  var importance = baseFilterController.dataset.importance;
+  var categoryId = baseFilterController.dataset.category;
+
   for(var i = 0 ; i < days.length; i++){
     let actualDay = days[i];
     var interestingImportance = false;
     var recommendedImportance = false;
     var requiredImportance = false;
     for(var j = 0 ; j < daysEvents[i].length; j++){
-      if(daysEvents[i][j].category === categoryId){
-        if(baseFilterController.dataset.importance === "interesting"){
+      if(daysEvents[i][j].category === categoryId || categoryId === 'all'){
+        if(importance === "interesting"){
           interestingImportance = true;
         }
-        else if(baseFilterController.dataset.importance === 'recommended'){
+        else if(importance === 'recommended'){
           recommendedImportance = true;
         }
-        else if(baseFilterController.dataset.importance === 'required'){
+        else if(importance === 'required'){
           requiredImportance = true;
         }
-        else if(baseFilterController.dataset.importance === 'all'){
+        else if(importance === 'all'){
           interestingImportance = true;
           recommendedImportance = true;
           requiredImportance = true;
@@ -258,4 +125,77 @@ let filterCategoryEvents = function(categoryId, element){
     }
     updateImportances(interestingImportance, recommendedImportance, requiredImportance, actualDay);
   }  
+}
+
+let filterCategories = function(selectedCategory){
+  console.log('filterCategories()');
+  let categoryId = selectedCategory.dataset.categoryId
+  filterCategoryEvents(categoryId, selectedCategory);
+}
+
+var resetImportances = function(eventMarker){
+  for(var i = 0 ; i < eventMarker.children.length; i++){
+    var temp = eventMarker.children[i];
+    temp.classList.remove('unselected-event-marker');
+  }
+}
+var checkSingleImportance = function(eventMarker, classString){
+  var marker = eventMarker.getElementsByClassName(classString);
+  if(marker[0] === undefined){}
+  else{
+    marker[0].classList.add('unselected-event-marker');
+  }
+}
+let updateImportances = function(interesting, recommended, required, day){
+  console.log('updateImportances()');
+  let eventMarkerContainer = day.nextElementSibling;
+  resetImportances(eventMarkerContainer);
+  if(!interesting){
+    checkSingleImportance(eventMarkerContainer, 'event-marker interesting');
+  }
+  if(!recommended){
+    checkSingleImportance(eventMarkerContainer, 'event-marker recommended');
+  }
+  if(!required ){
+    checkSingleImportance(eventMarkerContainer, 'event-marker required');
+  }
+}
+
+var changeCategoryLabel = function(text){
+  let currentClassLabel = document.getElementById('category-filter-button');
+  currentClassLabel.children[0].textContent = text;
+}
+
+var updateBaseFilterController = function(attribute, value){
+  let baseFilterController = document.getElementById('base-filter-controller');
+  baseFilterController.dataset[attribute] = value;
+}
+
+var setEvents = function(toggleClass, attribute, value){
+  let events = document.getElementById('event-widget').children;
+  for(var i = 0 ; i < events.length;i++){
+    if(value !== 'all'){
+      if(events[i].dataset[attribute] === value || i === 0){
+        events[i].classList.remove(toggleClass);
+      }
+      else{
+        events[i].classList.remove(toggleClass);
+        events[i].classList.add(toggleClass);
+      }
+    }
+    else{
+      events[i].classList.remove(toggleClass);
+    }
+  }
+}
+
+let filterCategoryEvents = function(categoryId, element){
+  console.log('filterCategoryEvents()');
+  updateBaseFilterController('category', categoryId);
+  changeCategoryLabel(element.textContent);
+  setEvents('unselectable-event', 'categoryId', categoryId);
+  let days = document.getElementById('calendar-widget').querySelectorAll('[data-event]');
+  var daysEvents = getDaysEvents(days);
+  checkDayForImportances(days, daysEvents);
+  dismissCategoryFilterDropdown();
 }
