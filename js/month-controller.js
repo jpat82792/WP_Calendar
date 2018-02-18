@@ -5,18 +5,26 @@ let monthsAbbreviations = ['jan','feb','mar','apr','may','jun','jul','aug','sep'
 
 let changeMonth = function(monthCalendar, direction){
   console.log("changeMonth()");
-    let currentMonth = monthCalendar.querySelector('[data-month-active="true"]');
-    currentMonth.classList.remove('month');
-    currentMonth.className += 'inactive-month';
-    currentMonth.dataset.monthActive = false;
-    var targetMonth = direction ? currentMonth.nextElementSibling : currentMonth.previousElementSibling;
-    targetMonth.dataset.monthActive = true;
-    targetMonth.classList.remove('inactive-month');
-    targetMonth.className += 'month';
-    let monthNumber = targetMonth.dataset.month;
-    changeMonthLabel(monthNumber);
-    changeEventsMonth(targetMonth);
+  let currentMonth = monthCalendar.querySelector('[data-month-active="true"]');
+  deactivateMonth(monthCalendar, currentMonth);
+  activateMonth(currentMonth);
+  var targetMonth = direction ? currentMonth.nextElementSibling : currentMonth.previousElementSibling;  
+  activateMonth(currentMonth);
+  let monthNumber = targetMonth.dataset.month;
+  changeMonthLabel(monthNumber);
+  changeEventsMonth(targetMonth);
+}
 
+var activateMonth = function(targetMonth){
+  targetMonth.dataset.monthActive = true;
+  targetMonth.classList.remove('inactive-month');
+  targetMonth.classList.add('month');
+}
+
+var deactivateMonth = function(monthCalendar, currentMonth){
+    currentMonth.classList.remove('month');
+    currentMonth.classList.add('inactive-month');
+    currentMonth.dataset.monthActive = false;
 }
 
 var nextMonthOffset = function(index){
@@ -36,40 +44,56 @@ var prevMonthOffset = function(index){
   }
 }
 
+var setCalendarNavigationBarLabel = function(month){
+  let label = document.querySelector('[class="calendar-navigation-bar-label"]');
+  label.textContent = month;
+}
+
+var setCalendarNavigationBarNextButton = function(month){
+  var nextButton = document.getElementById('calendar-next');
+  nextButton.textContent = month;
+}
+
+var setCalendarNavigationBarPrevButton = function(month){
+  var prevButton = document.getElementById('calendar-prev');
+  prevButton.textContent = month;  
+}
+
+var setMonthsLabel = function(month){
+  let monthLabel = document.querySelector('div[class="current-month-label"]');
+  monthLabel.textContent = month;
+}
+
+var setEventsInLabel = function(month){
+  var eventLabel = document.querySelector('[class="event-status-label"]');
+  var tempText = 'events in '+month;
+  eventLabel.textContent = tempText;
+}
+
 let changeMonthLabel = function(monthNumber){
   let statusBar = document.getElementById('calendar-status-bar');
   let statusBarBack = document.getElementById('calendar-back-button');
-  let monthLabel = document.querySelector('div[class="current-month-label"]');
-//  let statusBarLabel = document.getElementById('calendar-status-bar-label');
   for(var monthId = 0; monthId < months.length; monthId++){
     if((monthId+1) === parseInt(monthNumber)){
-      //statusBarLabel.textContent = months[monthId];
-      let label = document.querySelector('[class="calendar-navigation-bar-label"]');
-      var nextButton = document.getElementById('calendar-next');
-      var prevButton = document.getElementById('calendar-prev');
-      var eventLabel = document.querySelector('[class="event-status-label"]');
-      console.log(eventLabel);
-
-      var tempText = 'events in '+months[monthId];
-      monthLabel.textContent = months[monthId]; 
-      eventLabel.textContent = tempText;
-      prevButton.textContent = months[prevMonthOffset(monthId)];
-      nextButton.textContent = months[nextMonthOffset(monthId)];
-      label.textContent = months[monthId];
+      setCalendarNavigationBarLabel(months[monthId])
+      setCalendarNavigationBarNextButton(months[nextMonthOffset(monthId)]);
+      setCalendarNavigationBarPrevButton(months[prevMonthOffset(monthId)]);
+      setEventsInLabel(months[monthId]);
+      setMonthsLabel(months[monthId]); 
     }
   }
 }
 
 let initUiControls = function(){
-  /*let monthCalendar = document.getElementById('calendar-widget');
-  let buttonNextMonth = document.getElementById('next-month-btn');
-  let buttonPrevMonth = document.getElementById('prev-month-btn');
+  let monthCalendar = document.getElementById('calendar-widget');
+  let buttonNextMonth = document.getElementById('calendar-next');
+  let buttonPrevMonth = document.getElementById('calendar-prev');
   buttonNextMonth.onclick = function(){
     changeMonth(monthCalendar, true);
   }
   buttonPrevMonth.onclick = function(){
     changeMonth(monthCalendar, false);
-  }*/
+  }
 }
 
 initUiControls();

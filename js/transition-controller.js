@@ -237,8 +237,8 @@ let initTransitionController = function(){
   let nextWeekButton = document.getElementById('calendar-next');
   let prevWeekButton = document.getElementById('calendar-prev');
   //hideCalendarNavigation();
-  nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
-  prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};
+ /* nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
+  prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};*/
 }
 
 initTransitionController();
