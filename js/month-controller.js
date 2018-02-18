@@ -1,18 +1,21 @@
 console.log('month-controller.js');
-//TODO: add error handling to prevent TypeError when user clicks beyond currently loaded calendar months
 let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September','October','November','December'];
 let monthsAbbreviations = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
 let changeMonth = function(monthCalendar, direction){
   console.log("changeMonth()");
   let currentMonth = monthCalendar.querySelector('[data-month-active="true"]');
-  deactivateMonth(monthCalendar, currentMonth);
-  activateMonth(currentMonth);
-  var targetMonth = direction ? currentMonth.nextElementSibling : currentMonth.previousElementSibling;  
-  activateMonth(currentMonth);
-  let monthNumber = targetMonth.dataset.month;
-  changeMonthLabel(monthNumber);
-  changeEventsMonth(targetMonth);
+  var targetMonth = direction ? currentMonth.nextElementSibling : currentMonth.previousElementSibling; 
+  if(targetMonth !== null){ 
+    deactivateMonth(currentMonth);
+    activateMonth(targetMonth);
+    let monthNumber = targetMonth.dataset.month;
+    changeMonthLabel(monthNumber);
+    changeEventsMonth(targetMonth);
+  }
+  else{
+    alert("You've reached the last available month. If you believe this is in error, please contact the website admin");
+  }
 }
 
 var activateMonth = function(targetMonth){
@@ -21,7 +24,7 @@ var activateMonth = function(targetMonth){
   targetMonth.classList.add('month');
 }
 
-var deactivateMonth = function(monthCalendar, currentMonth){
+var deactivateMonth = function(currentMonth){
     currentMonth.classList.remove('month');
     currentMonth.classList.add('inactive-month');
     currentMonth.dataset.monthActive = false;
