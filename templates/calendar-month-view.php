@@ -64,38 +64,36 @@ function set_event_meta_data($event, $comma){
 
 function set_day_without_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, &$event_string, &$calendar, &$event_widget_content){
   $event_id_array = check_recurring_events($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present);
-  $events_string = '';
+  $event_string = '';
   //TODO: event_widget_content needs to happen here
+
   if(count($event_id_array)>0){
     $number_of_events = count($event_id_array);
     $i = 0;
-    $events_string .= 'data-event="';
+    $event_string .= 'data-event="';
     foreach($event_id_array as $current_event){
       create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
       if(++$i == $number_of_events){
-        $events_string .= set_event_meta_data($current_event, false);
+        $event_string .= set_event_meta_data($current_event, false);
       }
       else{
-        $events_string .= set_event_meta_data($current_event, true);
+        $event_string .= set_event_meta_data($current_event, true);
       }
     }
-    $events_string .= '"';
+    $event_string .= '"';
   }
   else{
   }
-  $calendar .= '<p '.$events_string.'>'.show_event($possible_importances_present).'</p>';
+  $calendar .= '<p '.$event_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
 function set_day_with_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, &$event_string, &$calendar, &$check_for_events, &$results, &$event_widget_content){
   while($check_for_events){
-  //TODO: add event to $holding_array. Check to see if an event should be triggered based on recurrence. 
     $earliest_event =  $results[0];
     if($earliest_event->event_id !== NULL){
       create_event_content($list_day, $month, $year, $earliest_event, $event_widget_content);
-      $events_string .= set_event_meta_data($earliest_event, false);
+      $event_string .= set_event_meta_data($earliest_event, false);
     }
-
-
     check_importance($possible_importances, $possible_importances_present, $earliest_event);
     if($earliest_event->recursion !== NULL){
       initial_reccurring_event_preparation($earliest_event, $list_day);
@@ -108,10 +106,10 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
       $check_for_events = true;
       set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
       if((int)$event_day==$list_day && (int)$event_month==$month && (int)$event_year==$year){
-        $events_string .= ', ';
+        $event_string .= ', ';
       }
       else{
-        $events_string .= ', ';
+        $event_string .= ', ';
       }
     }
     else{
@@ -126,18 +124,18 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
     foreach($event_id_array as $current_event){
       create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
       if(++$i == $number_of_events){
-        $events_string .= set_event_meta_data($current_event, false);
+        $event_string .= set_event_meta_data($current_event, false);
       }
       else{
-        $events_string .= set_event_meta_data($current_event, true);
+        $event_string .= set_event_meta_data($current_event, true);
       }
     }
-    $events_string .= '';
+    $event_string .= '';
   }
   else{
   }
-  $events_string .= '"';
-  $calendar .= '<p '.$events_string.'>'.show_event($possible_importances_present).'</p>';
+  $event_string .= '"';
+  $calendar .= '<p '.$event_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
 function fill_start_month_blank_days($running_day, $days_in_this_week){
@@ -182,6 +180,17 @@ function echo_month($current_month, $month, $year, $calendar){
   }
 }
 
+function end_week_start_week(&$running_day, &$day_counter, $days_in_month, &$calendar){
+	if($running_day == 6){
+		$calendar.= '</tr>';
+		if(($day_counter+1) != $days_in_month){
+			$calendar.= '<tr class="calendar-row">';
+		}
+		$running_day = -1;
+		$days_in_this_week = 0;
+	}
+}
+
 function set_calendar_month($month, $year, $current_month, &$results, &$recurring_events, &$event_widget_content){
   $calendar;
   $calendar = '<table cellpadding="0" cellspacing="0" class="calendar-month">';
@@ -218,10 +227,12 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     }
     else{
       $check_for_more_events = true;
-      $events_string .= 'data-event="';
+      $event_string .= 'data-event="';
       set_day_with_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, $event_string, $calendar, $check_for_more_events, $results, $event_widget_content);
     }	
 		$calendar.= '</td>';
+    end_week_start_week($running_day, $day_counter, $days_in_month, $calendar);
+    /*
 		if($running_day == 6){
 			$calendar.= '</tr>';
 			if(($day_counter+1) != $days_in_month){
@@ -229,7 +240,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 			}
 			$running_day = -1;
 			$days_in_this_week = 0;
-		}
+		}*/
 		$days_in_this_week++; $running_day++; $day_counter++;
 	}
   fill_end_month_blank_days($days_in_this_week, $calendar);

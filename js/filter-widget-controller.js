@@ -134,6 +134,7 @@ let filterCategories = function(selectedCategory){
 }
 
 var resetImportances = function(eventMarker){
+  console.log(eventMarker);
   for(var i = 0 ; i < eventMarker.children.length; i++){
     var temp = eventMarker.children[i];
     temp.classList.remove('unselected-event-marker');
@@ -148,6 +149,7 @@ var checkSingleImportance = function(eventMarker, classString){
 }
 let updateImportances = function(interesting, recommended, required, day){
   console.log('updateImportances()');
+  console.log(day);
   let eventMarkerContainer = day.nextElementSibling;
   resetImportances(eventMarkerContainer);
   if(!interesting){
