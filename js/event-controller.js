@@ -34,7 +34,6 @@ let changeEventsMonth = function(month){
       }
     }
     else{
-     // changeEventsLabel('month', events[i]);
     }
   }
 }
@@ -59,13 +58,8 @@ let changeEventsWeek = function(week, element){
     atSelectedDay = true
     if(week === events[i].parentNode || atSelectedDay){
       let workArray = temp.dataset.event.split(', ');
-      console.log("workArray");
-      console.log(workArray);
       for(var j = 0; j < workArray.length; j++){
         var workTemp = workArray[j].split(',');
-        console.log('temp');
-        console.log(workTemp[0].split('(')[1]);
-        console.log('[data-event="'+workTemp[0].split('(')[1]+'"]');
         var eventInfo = eventContainer.querySelector('[data-event="'+workTemp[0].split('(')[1]+'"]');
         if(eventInfo !== null){
           eventInfo.classList.remove('active-event');
@@ -100,6 +94,59 @@ let setDayLabelBackground = function(importance){
   }
 }
 
+var setEventDay = function(dayNumber, dayLabelClass){
+  var eventDayContainer = document.getElementById('dropdown-event-day');
+  eventDayContainer.textContent = dayNumber;
+  eventDayContainer.classList.add(dayLabelClass);
+}
+
+var setEventMonth = function(month){
+  let eventMonthContainer = document.getElementById('dropdown-event-month');
+  eventMonthContainer.textContent = month;
+}
+
+var setEventYear = function(year){
+    let eventYearContainer = document.getElementById('dropdown-event-year');
+  eventYearContainer.textContent = year;
+}
+
+var setEventCategory = function(eventCategory){
+  let eventCategoryContainer = document.getElementById('dropdown-event-category');
+  eventCategoryContainer.textContent = eventCategory;
+}
+
+var setEventTitle = function(eventTitle){
+  let eventTitleContainer = document.getElementById('dropdown-event-title');
+  eventTitleContainer.textContent = eventTitle;
+}
+
+var setEventDescription = function(eventContent){
+  let eventDescriptionContainer = document.getElementById('dropdown-event-content');
+  eventDescriptionContainer.textContent = eventContent;
+}
+
+var setEventModal = function(month, day, dayClass, year, category, title, description){
+  setEventMonth(month);
+  setEventDay(day, dayClass);
+  setEventYear(year);
+  setEventCategory(category);
+  setEventTitle(title);
+  setEventDescription(description);
+}
+
+var showEventModal = function(eventDropdown){
+  //display event dropdown
+  eventDropdown.classList.remove('active-filter-dropdown');
+  eventDropdown.className += ' active-filter-dropdown';
+}
+var setEventModalDismissButton = function(eventDropdown, eventDayContainer, dayLabelClass){
+  let dismissEventButton = document.getElementById('close-event-details-dropdown');
+  
+  dismissEventButton.onclick = function(){
+    dismissSelectedEvent(eventDropdown, eventDayContainer, dayLabelClass);
+  }
+}
+
 let selectEvent = function(event){
   //fill with event data from event parameter
   let month = event.querySelector('[class="event-month"]').textContent;
@@ -109,30 +156,12 @@ let selectEvent = function(event){
   let eventTitle = event.querySelector('[class="event-title"]').textContent;
   let eventContent = event.dataset.eventContent;
   let eventImportance = event.dataset.eventImportance;
-  let dayLabelClass = setDayLabelBackground(eventImportance);
-  
+  var dayLabelClass = setDayLabelBackground(eventImportance);
   let eventDropdown = document.getElementById('event-details-dropdown');
   let eventDayContainer = document.getElementById('dropdown-event-day');
-  let eventMonthContainer = document.getElementById('dropdown-event-month');
-  let eventYearContainer = document.getElementById('dropdown-event-year');
-  let eventCategoryContainer = document.getElementById('dropdown-event-category');
-  let eventTitleContainer = document.getElementById('dropdown-event-title');
-  let eventDescriptionContainer = document.getElementById('dropdown-event-content');
-  let dismissEventButton = document.getElementById('close-event-details-dropdown');
-  
-  dismissEventButton.onclick = function(){
-    dismissSelectedEvent(eventDropdown, eventDayContainer,dayLabelClass);
-  }
-  eventDayContainer.textContent = dayNumber;
-  eventDayContainer.className += ' '+dayLabelClass;
-  eventMonthContainer.textContent = month;
-  eventYearContainer.textContent = year;
-  eventCategoryContainer.textContent = eventCategory;
-  eventTitleContainer.textContent = eventTitle;
-  eventDescriptionContainer.textContent = eventContent;
-  //display event dropdown
-  eventDropdown.classList.remove('active-filter-dropdown');
-  eventDropdown.className += ' active-filter-dropdown';
+  setEventModal(month, dayNumber, dayLabelClass, year, eventCategory, eventTitle, eventContent);
+  setEventModalDismissButton(eventDropdown, eventDayContainer, dayLabelClass);
+  showEventModal(eventDropdown);
 }
 
 let initEventUi = function(){
