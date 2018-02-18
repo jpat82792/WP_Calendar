@@ -42,9 +42,11 @@ let selectMonth = function(element, monthComponent, yearComponent, eventComponen
   let selectedMonth = monthComponent.querySelector('[data-month="'+month+'"][data-year="'+year+'"]');
   let activeMonth = monthComponent.querySelector('[data-month-active="true"]');
   changeMonthLabel(month);
+  //TODO replace three lines below with deactivateMonth(), see month-controller
   activeMonth.dataset.monthActive = false;
   activeMonth.classList.remove('month');
   activeMonth.className += 'inactive-month';
+  //TODO: replace three lines below with activateMonth(), see month-controller
   selectedMonth.dataset.monthActive = true;
   selectedMonth.classList.remove('inactive-month');
   selectedMonth.className += 'month';
@@ -184,7 +186,6 @@ let setBackToMonth = function(parentElement){
   console.log('setBackToMonth');
   let calendarMonthComponent = document.getElementById('calendar-widget');
   let statusBarBack = document.getElementById('calendar-back-button');
-  console.log(statusBarBack);
   statusBarBack.onclick = function(){return false};
   statusBarBack.onclick = function(){backToMonth(parentElement);};
 }
@@ -214,6 +215,7 @@ let initTransitionController = function(){
   let calendarOverviewComponent = document.getElementById('calendar-overview-widget');
   let calendarMonthComponent = document.getElementById('calendar-widget');
   let eventComponent = document.getElementById('event-widget');
+  //TODO: Uncomment when year view is desired
   /*for(var month = 0; month < calendarOverviewComponent.children.length; month++){
     let temp = calendarOverviewComponent.children[month];
     temp.onclick = function(){selectMonth(this, calendarMonthComponent, calendarOverviewComponent, eventComponent)};
@@ -225,7 +227,7 @@ let initTransitionController = function(){
   /*statusBarBack.classList.remove('display-none');
   statusBarBack.className += ' display-none';*/
   let days = calendarMonthComponent.querySelectorAll('[class="calendar-day"]');
-  
+  //TODO: Uncomment when week view is desired
   /*for(var day = 0; day < days.length; day++){
     days[day].onclick = function(){
       selectWeek(this);
