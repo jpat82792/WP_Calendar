@@ -140,6 +140,14 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
   $calendar .= '<p '.$events_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
+function fill_blank_days($running_day, $days_in_this_week){
+	/* print "blank" days until the first of the current week */
+	for($x = 0; $x < $running_day; $x++){
+		$calendar.= '<td class="calendar-day-np"> </td>';
+		$days_in_this_week++;
+	}
+}
+
 function set_calendar_month($month, $year, $current_month, &$results, &$recurring_events, &$event_widget_content){
   $calendar;
   
@@ -154,21 +162,14 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 	$days_in_this_week = 1;
 	$day_counter = 0;
 	$dates_array = array();
-
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
-
-	/* print "blank" days until the first of the current week */
-	for($x = 0; $x < $running_day; $x++):
-		$calendar.= '<td class="calendar-day-np"> </td>';
-		$days_in_this_week++;
-	endfor;
+  fill_blank_days($running_day, $days_in_this_week);
 
 	/* keep going with days.... */
 	for($list_day = 1; $list_day <= $days_in_month; $list_day++):
 		$calendar.= '<td class="calendar-day">';
 		$calendar.= '<div class="unselected-day"></div>';
-		/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
     $earliest_event = $results[0];
     $today_the_day = false;
     $event_day;
@@ -176,7 +177,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     $event_year;
     set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
     //Event is today, alter day number
-		  $calendar.= '<div class="day-number">'.$list_day.'</div>';
+		$calendar.= '<div class="day-number">'.$list_day.'</div>';
     if((int)$event_day == $list_day && (int) $event_month ==$month && (int)$event_year==$year){
       $today_the_day = true;
     }
