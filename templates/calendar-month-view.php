@@ -140,7 +140,7 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
   $calendar .= '<p '.$events_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
-function fill_blank_days($running_day, $days_in_this_week){
+function fill_start_month_blank_days($running_day, $days_in_this_week){
 	/* print "blank" days until the first of the current week */
 	for($x = 0; $x < $running_day; $x++){
 		$calendar.= '<td class="calendar-day-np"> </td>';
@@ -148,14 +148,44 @@ function fill_blank_days($running_day, $days_in_this_week){
 	}
 }
 
-function set_calendar_month($month, $year, $current_month, &$results, &$recurring_events, &$event_widget_content){
-  $calendar;
-  
-  $calendar = '<table cellpadding="0" cellspacing="0" class="calendar-month">';
-	/* table headings */
+function fill_end_month_blank_days($days_in_this_week, &$calendar){
+	if($days_in_this_week < 8){
+		for($x = 1; $x <= (8 - $days_in_this_week); $x++){
+			$calendar.= '<td class="calendar-day-np"> </td>';
+		}
+	}
+}
+
+function set_day_headers(&$calendar){
 	$headings = array('S','M','T','W','TH','F','S');
 	$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
+}
 
+function set_selected_day($day, $month, $year, &$calendar){
+  $current_day = date('j');
+  $current_month = date('n');
+  $current_year = date('Y');
+  if(($day==$current_day)&&($month==$current_month)&&($year==$current_year)){
+    $calendar .='<div class="selected-day"></div>';
+  }
+  else{
+    $calendar .='<div class="unselected-day"></div>';
+  }
+}
+
+function echo_month($current_month, $month, $year, $calendar){
+  if(!$current_month){
+	  echo('<div class="inactive-month" data-month-active="false" data-month="'.esc_attr($month).'" data-year="'.esc_attr($year).'" >'.$calendar.'</div>');
+  }
+  else{
+  	echo('<div class="month" data-month-active="true" data-month="'.esc_attr($month).'" data-year="'.esc_attr($year).'">'.$calendar.'</div>');
+  }
+}
+
+function set_calendar_month($month, $year, $current_month, &$results, &$recurring_events, &$event_widget_content){
+  $calendar;
+  $calendar = '<table cellpadding="0" cellspacing="0" class="calendar-month">';
+  set_day_headers($calendar);
 	/* days and weeks vars now ... */
 	$running_day = date('w',mktime(0,0,0,$month,1,$year));
 	$days_in_month = date('t',mktime(0,0,0,$month,1,$year));
@@ -164,12 +194,12 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 	$dates_array = array();
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
-  fill_blank_days($running_day, $days_in_this_week);
+  fill_start_month_blank_days($running_day, $days_in_this_week);
 
 	/* keep going with days.... */
-	for($list_day = 1; $list_day <= $days_in_month; $list_day++):
+	for($list_day = 1; $list_day <= $days_in_month; $list_day++){
 		$calendar.= '<td class="calendar-day">';
-		$calendar.= '<div class="unselected-day"></div>';
+    set_selected_day($list_day, $month, $year, $calendar);
     $earliest_event = $results[0];
     $today_the_day = false;
     $event_day;
@@ -192,39 +222,20 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
       set_day_with_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, $event_string, $calendar, $check_for_more_events, $results, $event_widget_content);
     }	
 		$calendar.= '</td>';
-		if($running_day == 6):
+		if($running_day == 6){
 			$calendar.= '</tr>';
-			if(($day_counter+1) != $days_in_month):
+			if(($day_counter+1) != $days_in_month){
 				$calendar.= '<tr class="calendar-row">';
-			endif;
+			}
 			$running_day = -1;
 			$days_in_this_week = 0;
-		endif;
+		}
 		$days_in_this_week++; $running_day++; $day_counter++;
-	endfor;
-
-	/* finish the rest of the days in the week */
-	if($days_in_this_week < 8):
-		for($x = 1; $x <= (8 - $days_in_this_week); $x++):
-			$calendar.= '<td class="calendar-day-np"> </td>';
-		endfor;
-	endif;
-
-	/* final row */
+	}
+  fill_end_month_blank_days($days_in_this_week, $calendar);
 	$calendar.= '</tr>';
-
-	/* end the table */
 	$calendar.= '</table>';
-	
-	/* all done, return result */
-  if(!$current_month){
-	  //$calendar = '<table cellpadding="0" cellspacing="0" class="calendar inactive-month">';
-	  echo('<div class="inactive-month" data-month-active="false" data-month="'.esc_attr($month).'" data-year="'.esc_attr($year).'" >'.$calendar.'</div>');
-  }
-  else{
-  	echo('<div class="month" data-month-active="true" data-month="'.esc_attr($month).'" data-year="'.esc_attr($year).'">'.$calendar.'</div>');
-
-  }
+  echo_month($current_month, $month, $year, $calendar);
 }
 function construct_month_view($future_range, $past_range){
   $current_year = date('Y');
