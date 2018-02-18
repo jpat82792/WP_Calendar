@@ -1,46 +1,12 @@
 <?php
 
-function convert_number_to_month($int){
-  switch($int){
-    case 1:
-      return 'January';
-    case 2:
-      return 'February';
-    case 3:
-      return 'March';
-    case 4:
-      return 'April';
-    case 5:
-      return 'May';
-    case 6:
-      return 'June';
-    case 7:
-      return 'July';
-    case 8:
-      return 'August';
-    case 9:
-      return 'September';
-    case 10:
-      return 'October';
-    case 11:
-      return 'November';
-    case 12:
-      return 'December';
-    default:
-      return '';
-  }
-}
+
 
 function create_event_content($day, $month, $year, $event, &$event_widget_content){
   $event_id = $event->event_id;
   $formatted_day = (int) $day;
   $current_month = (int) date('m', time());
   $current_year = (int) date('Y', time());
-  error_log("current date: ");
-  error_log((string) $current_date);
-  error_log((string) $month);
-  error_log((string) $current_year);
-  error_log((string) $year);
 
 //  $current_month = 
   $class_name = ((((int)$month)==$current_month)&&(((int)$year)==$current_year)) ? 'active-event' : 'inactive-event';
@@ -78,6 +44,24 @@ function add_events_to_event_viewer(&$results){
   return $event_widget;
 }
 
+function set_current_event_date(&$day, &$month, &$year, $date){
+  $date_array = explode('-', $date->event_start_date);
+  $day = $date_array[2];
+  $month = $date_array[1];
+  $year = $date_array[0];
+}
+
+function set_event_meta_data($event, $comma){
+  $temp;
+  if($comma){
+   $temp = '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.'), ';
+  }
+  else{
+   $temp = '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.')';
+  }
+  return $temp;
+}
+
 function set_calendar_month($month, $year, $current_month, &$results, &$recurring_events, &$event_widget_content){
   $calendar;
   
@@ -108,11 +92,11 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 		$calendar.= '<div class="unselected-day"></div>';
 		/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
     $earliest_event = $results[0];
-    $list_of_arrays = explode('-', $earliest_event->event_start_date);
     $today_the_day = false;
-    $event_day = $list_of_arrays[2];
-    $event_month = $list_of_arrays[1];
-    $event_year = $list_of_arrays[0];
+    $event_day;
+    $event_month;
+    $event_year;
+    set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
     //Event is today, alter day number
 		  $calendar.= '<div class="day-number">'.$list_day.'</div>';
     if((int)$event_day == $list_day && (int) $event_month ==$month && (int)$event_year==$year){
@@ -134,10 +118,10 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
         foreach($event_id_array as $current_event){
           create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
           if(++$i == $number_of_events){
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')';
+            $events_string .= set_event_meta_data($current_event, false);
           }
           else{
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')'.', ';
+            $events_string .= set_event_meta_data($current_event, true);
           }
         }
         $events_string .= '"';
@@ -149,19 +133,15 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     else{
       error_log("New event");
       $check_for_more_events = true;
-
       //TODO: add two variables to store state of checks on if more events are in holding
       //The other variable should store if the next date in array is not today.
-      $count = 0;
       $events_string .= 'data-event="';
-      $unchecked_recurrence = true;
-      $store_event_date = $earliest_event->event_start_date;
       while($check_for_more_events){
     //TODO: add event to $holding_array. Check to see if an event should be triggered based on recurrence. 
         $earliest_event =  $results[0];
         if($earliest_event->event_id !== NULL){
           create_event_content($list_day, $month, $year, $earliest_event, $event_widget_content);
-          $events_string .= '('.$earliest_event->event_id.','.$earliest_event->event_category_id.','.$earliest_event->event_importance.')';
+          $events_string .= set_event_meta_data($earliest_event, false);
         }
 
 
@@ -172,18 +152,10 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
         }
         array_shift($results);
         $earliest_event =  $results[0];
-        $list_of_arrays = explode('-', $earliest_event->event_start_date);
-        $event_day = $list_of_arrays[2];
-        $event_month = $list_of_arrays[1];
-        $event_year = $list_of_arrays[0];
-
+        set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
         if((int)$event_day==$list_day && (int)$event_month==$month && (int)$event_year==$year){
           $check_for_more_events = true;
-
-          $list_of_arrays = explode('-', $earliest_event->event_start_date);
-          $event_day = $list_of_arrays[2];
-          $event_month = $list_of_arrays[1];
-          $event_year = $list_of_arrays[0];
+          set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
           if((int)$event_day==$list_day && (int)$event_month==$month && (int)$event_year==$year){
             $events_string .= ', ';
           }
@@ -208,10 +180,10 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
         foreach($event_id_array as $current_event){
           create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
           if(++$i == $number_of_events){
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')';
+            $events_string .= set_event_meta_data($current_event, false);
           }
           else{
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')'.', ';
+            $events_string .= set_event_meta_data($current_event, true);
           }
         }
         $events_string .= '';

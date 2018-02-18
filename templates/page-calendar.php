@@ -6,6 +6,7 @@
 <body>
   <?php
  // require_once(get_template_directory() . '/templates/navbar.php');
+  require_once(plugin_dir_path(__FILE__) . 'calendar-universal-functions.php');
   require_once(plugin_dir_path(__FILE__) . 'filter-dropdown-view.php');
   require_once(plugin_dir_path(__FILE__) .'calendar-status-bar.php');
   require_once(plugin_dir_path(__FILE__).'calendar-year-view.php');
