@@ -107,7 +107,7 @@ let nextPrevWeek = function(button, monthComponent){
     }
   }
 }
-/*
+
 let selectWeek = function(element){
   console.log('selectWeek()');
   console.log(element);
@@ -147,7 +147,8 @@ let selectWeek = function(element){
     }
   }
   setBackToMonth(parentElement);
-}*/
+}
+
 let backToMonth = function(parentElement, firstParent){
   console.log("backToMonth()");
   changeCalendarNavigationMonth();
@@ -227,12 +228,14 @@ let initTransitionController = function(){
   /*statusBarBack.classList.remove('display-none');
   statusBarBack.className += ' display-none';*/
   let days = calendarMonthComponent.querySelectorAll('[class="calendar-day"]');
+  console.log("DAYS::");
+  console.log(days);
   //TODO: Uncomment when week view is desired
-  /*for(var day = 0; day < days.length; day++){
+  for(var day = 0; day < days.length; day++){
     days[day].onclick = function(){
       selectWeek(this);
     }
-  }*/
+  }
   let calendarNavigationBar = document.getElementById('calendar-navigation-bar');
  // calendarNavigationBar.className += ' display-none';
 

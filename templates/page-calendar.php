@@ -6,6 +6,7 @@
 <body>
   <?php
  // require_once(get_template_directory() . '/templates/navbar.php');
+  $current_month = date('F');
   require_once(plugin_dir_path(__FILE__) . 'calendar-universal-functions.php');
   require_once(plugin_dir_path(__FILE__) . 'filter-dropdown-view.php');
   require_once(plugin_dir_path(__FILE__) .'calendar-status-bar.php');
@@ -14,7 +15,7 @@
 
  /* construct_year_view_calendar(1,1);*/
   construct_month_view(1,1);  
-  $current_month = date('F');
+
   $month_array = ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function determine_date_index($current_month){
     switch($current_month){

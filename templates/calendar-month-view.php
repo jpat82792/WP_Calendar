@@ -263,7 +263,7 @@ function construct_month_view($future_range, $past_range){
 
   //This string will contain all events for display in event feed
   $event_widget_content = '';
-//  set_calendar_status_bar($numeric_current_month);
+  //set_calendar_status_bar($numeric_current_month);
   echo('<div id="calendar-widget" style="display:block;">');
   for($year = $past_range; $year >= 1; $year--){
     

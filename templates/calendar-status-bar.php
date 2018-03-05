@@ -13,7 +13,7 @@ function set_calendar_status_bar($current_state){
   }
 ?>
 <div id="calendar-status-bar">
-  <!--<button id="calendar-back-button"><span class="fa fa-angle-left"></span></button><!--<button class="clean-button" id="prev-month-btn">"<"</button>--><label id="calendar-status-bar-label"><?php  echo($current_month_text); ?></label><!--<button class="clean-button" id="next-month-btn">">"</button>-->
+  <button id="calendar-back-button"><span class="fa fa-angle-left"></span></button><button class="clean-button" id="prev-month-btn">"<"</button><label id="calendar-status-bar-label"><?php  echo($current_month_text); ?></label><button class="clean-button" id="next-month-btn">">"</button>
 </div>
 <?php
 }
