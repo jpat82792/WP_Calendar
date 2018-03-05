@@ -138,7 +138,7 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
   $calendar .= '<p '.$event_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
-function fill_start_month_blank_days($running_day, $days_in_this_week){
+function fill_start_month_blank_days($running_day, $days_in_this_week, &$calendar){
 	/* print "blank" days until the first of the current week */
 	for($x = 0; $x < $running_day; $x++){
 		$calendar.= '<td class="calendar-day-np"> </td>';
@@ -203,7 +203,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 	$dates_array = array();
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
-  fill_start_month_blank_days($running_day, $days_in_this_week);
+  fill_start_month_blank_days($running_day, $days_in_this_week, $calendar);
 
 	/* keep going with days.... */
 	for($list_day = 1; $list_day <= $days_in_month; $list_day++){
@@ -232,7 +232,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     }	
 		$calendar.= '</td>';
     end_week_start_week($running_day, $day_counter, $days_in_month, $calendar);
-    /*
+    
 		if($running_day == 6){
 			$calendar.= '</tr>';
 			if(($day_counter+1) != $days_in_month){
@@ -240,7 +240,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 			}
 			$running_day = -1;
 			$days_in_this_week = 0;
-		}*/
+		}
 		$days_in_this_week++; $running_day++; $day_counter++;
 	}
   fill_end_month_blank_days($days_in_this_week, $calendar);
