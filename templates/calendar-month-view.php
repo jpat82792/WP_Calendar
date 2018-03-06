@@ -51,39 +51,36 @@ function set_current_event_date(&$day, &$month, &$year, $date){
   $year = $date_array[0];
 }
 
-function set_event_meta_data($event, $comma){
-  $temp;
+function set_event_meta_data($event, $comma, &$event_string){
   if($comma){
-   $temp = '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.'), ';
+   $event_string .= '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.'), ';
   }
   else{
-   $temp = '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.')';
+   $event_string .= '('.$event->event_id .','. $event->event_category_id.','.$event->event_importance.')';
   }
-  return $temp;
 }
 
 function set_day_without_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, &$event_string, &$calendar, &$event_widget_content){
   $event_id_array = check_recurring_events($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present);
-  $event_string = '';
   //TODO: event_widget_content needs to happen here
 
-  if(count($event_id_array)>0){
+  if(count($event_id_array) > 0){
     $number_of_events = count($event_id_array);
     $i = 0;
     $event_string .= 'data-event="';
     foreach($event_id_array as $current_event){
       create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
       if(++$i == $number_of_events){
-        $event_string .= set_event_meta_data($current_event, false);
+        $event_string .= set_event_meta_data($current_event, false, $event_string);
       }
       else{
-        $event_string .= set_event_meta_data($current_event, true);
+        $event_string .= set_event_meta_data($current_event, true, $event_string);
       }
     }
-    $event_string .= '"';
   }
   else{
   }
+  $event_string .= '"';
   $calendar .= '<p '.$event_string.'>'.show_event($possible_importances_present).'</p>';
 }
 
@@ -92,7 +89,7 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
     $earliest_event =  $results[0];
     if($earliest_event->event_id !== NULL){
       create_event_content($list_day, $month, $year, $earliest_event, $event_widget_content);
-      $event_string .= set_event_meta_data($earliest_event, false);
+      $event_string .= set_event_meta_data($earliest_event, false, $event_string);
     }
     check_importance($possible_importances, $possible_importances_present, $earliest_event);
     if($earliest_event->recursion !== NULL){
@@ -124,13 +121,12 @@ function set_day_with_initial_event($list_day, $month, $year, $recurring_events,
     foreach($event_id_array as $current_event){
       create_event_content($list_day, $month, $year, $current_event,$event_widget_content);
       if(++$i == $number_of_events){
-        $event_string .= set_event_meta_data($current_event, false);
+        $event_string .= set_event_meta_data($current_event, false, $event_string);
       }
       else{
-        $event_string .= set_event_meta_data($current_event, true);
+        $event_string .= set_event_meta_data($current_event, true, $event_string);
       }
     }
-    $event_string .= '';
   }
   else{
   }
@@ -147,11 +143,11 @@ function fill_start_month_blank_days($running_day, $days_in_this_week, &$calenda
 }
 
 function fill_end_month_blank_days($days_in_this_week, &$calendar){
-	if($days_in_this_week < 8){
-		for($x = 1; $x <= (8 - $days_in_this_week); $x++){
+
+		for($x = $days_in_this_week; $x < 7; $x++){
 			$calendar.= '<td class="calendar-day-np"> </td>';
 		}
-	}
+
 }
 
 function set_day_headers(&$calendar){
@@ -211,9 +207,8 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     set_selected_day($list_day, $month, $year, $calendar);
     $earliest_event = $results[0];
     $today_the_day = false;
-    $event_day;
-    $event_month;
-    $event_year;
+    $event_day; $event_month; $event_year;
+    $event_string = 'data-event="';
     set_current_event_date($event_day, $event_month, $event_year, $earliest_event);
     //Event is today, alter day number
 		$calendar.= '<div class="day-number">'.$list_day.'</div>';
@@ -227,7 +222,6 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
     }
     else{
       $check_for_more_events = true;
-      $event_string .= 'data-event="';
       set_day_with_initial_event($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present, $event_string, $calendar, $check_for_more_events, $results, $event_widget_content);
     }	
 		$calendar.= '</td>';
@@ -243,7 +237,7 @@ function set_calendar_month($month, $year, $current_month, &$results, &$recurrin
 		}
 		$days_in_this_week++; $running_day++; $day_counter++;
 	}
-  fill_end_month_blank_days($days_in_this_week, $calendar);
+  fill_end_month_blank_days($running_day, $calendar);
 	$calendar.= '</tr>';
 	$calendar.= '</table>';
   echo_month($current_month, $month, $year, $calendar);
