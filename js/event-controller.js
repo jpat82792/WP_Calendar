@@ -40,37 +40,37 @@ let changeEventsMonth = function(month){
 
 let changeEventsWeek = function(week, element){
   console.log("changeEventsWeek()");
+  console.log(element);
   let eventContainer = document.getElementById('event-widget');
+  var calendarContainer = document.getElementById('calendar-widget');
+  var currentMonth = calendarContainer.querySelector('[class="month"]');
+  var currentWeek = currentMonth.querySelector('[data-current-week="true"]');
+  var currentWeekEvents = currentWeek.querySelectorAll('[data-event]');
   let events = week.querySelectorAll('[data-event]');
-  console.log(events);
   changeEventsLabel('week', eventContainer.children[0]);
   let allEvents = eventContainer.children;
-  var atSelectedDay = false;
+  var atSelectedDay = true;
   for(var i = 0 ; i < allEvents.length; i++){
     if(i !== 0){
       allEvents[i].classList.remove('active-event');
-      allEvents[i].classList.remove('inactive-event');
       allEvents[i].classList.add('inactive-event');
     }
   }
-  for(var i = 0 ; i < events.length; i++){
-    let temp = events[i];
-    atSelectedDay = true
-    if(week === events[i].parentNode || atSelectedDay){
-      let workArray = temp.dataset.event.split(', ');
-      for(var j = 0; j < workArray.length; j++){
-        var workTemp = workArray[j].split(',');
-        var eventInfo = eventContainer.querySelector('[data-event="'+workTemp[0].split('(')[1]+'"]');
-        if(eventInfo !== null){
-          eventInfo.classList.remove('active-event');
-          eventInfo.classList.add('active-event');
-          console.log(eventInfo);
-          console.log('eventInfo is not null');
-        }
-        else{
-          console.log("eventInfo is null");
-        }
-      }  
+  var selectedDay = false
+  for(var i = 0 ; i < currentWeekEvents.length; i++){
+    if(currentWeekEvents[i] === element.children[2]){
+      selectedDay = true;
+    }
+    if(selectedDay){
+      var eventArrayContainer = currentWeekEvents[i].dataset.event;
+      var eventArray = eventArrayContainer.split(',');
+      for(var j = 0; j < eventArray.length;j++){
+      var eventId = eventArray[j].split('(')[1];
+      var eventBlock = eventContainer.querySelector('[data-event="'+eventId+'"]');
+      if(eventBlock != null){
+        eventBlock.classList.add('active-event');
+      }
+      }
     }
   }
 }
