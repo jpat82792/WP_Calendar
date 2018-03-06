@@ -2,9 +2,7 @@
   <div class="stick-calendar">
   <div class="calendar-filters-bar" id="base-filter-controller" data-category="all" data-importance="all" data-month="2">
     <!-- contains filter menus as well as event drill in drop down -->
-<!--    <button id="calendar-back-button">
-      <span class="fa fa-angle-left"></span>
-    </button>-->
+
     <div id="category-filter" class="dropdown-category-filter default-dropdown">
       <button id="close-category-filter" class="clean-button rizzoli-button">
         <span class="fa fa-times"></span>
@@ -68,6 +66,9 @@
       <div class="event-marker recommended"></div>
       <div class="event-marker interesting"></div>
     </div>
+   <button id="calendar-back-button">
+      <span class="fa fa-angle-left"></span>
+    </button>
   <div class="current-month-label">
     <?php $current_date = date('F');
       echo($current_date);

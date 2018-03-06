@@ -158,11 +158,6 @@ function set_year_view_month($month, $year, $current_month, $clear_row, &$result
 	/* keep going with days.... */
 	for($list_day = 1; $list_day <= $days_in_month; $list_day++):
 		$calendar.= '<td class="calendar-day">';
-		/* add in the day number */
-
-
-		/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
-    
     $earliest_event = $results[0];
     $list_of_arrays = explode('-', $earliest_event->event_start_date);
     $today_the_day = false;
@@ -181,26 +176,7 @@ function set_year_view_month($month, $year, $current_month, $clear_row, &$result
     $possible_importances_present = array("required" => false, "recommended"=> false, "interesting" => false);
     if(!$today_the_day){
       check_recurring_events($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present);
-      $calendar .= show_event($possible_importances_present);//'<p class="event-day">'..'</p>';
-     /*$event_id_array = check_recurring_events($list_day, $month, $year, $recurring_events, $possible_importances, $possible_importances_present);
-      $events_string = '';
-      if(count($event_id_array)>0){
-        $number_of_events = count($event_id_array);
-        $i = 0;
-        $events_string .= 'data-event="';
-        foreach($event_id_array as $current_event){
-          if(++$i == $number_of_events){
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')';
-          }
-          else{
-            $events_string .= '('.$current_event->event_id .','. $current_event->event_category_id.','.$current_event->event_importance.')'.', ';
-          }
-        }
-        $events_string .= '"';
-      }
-      else{
-      }
-      $calendar .= '<p '.$events_string.'>'.show_event($possible_importances_present).'</p>';*/
+      $calendar .= show_event($possible_importances_present);
     }
     else{
       $check_for_more_events = true;
@@ -306,7 +282,7 @@ function construct_year_view_calendar($future_range, $past_range){
     $past_year = $numeric_current_year - $year;
 
     //Determines if clear-row is needed
-
+    $current_months .= '<h3 style="float: left; width: 100%;">'.$past_year.'</h3>';
     if($year == $future_range){
       for($month = $numeric_current_month; $month <= 12; $month++){
         $clear_row =  ($current_months_count % 2 == 1 ? false : true);
@@ -328,7 +304,7 @@ function construct_year_view_calendar($future_range, $past_range){
     $loop_year = $year + $numeric_current_year;
     //Determines if clear-row is needed
     $clear_row =  ($current_months_count % 2) ? false : true;
-
+    $current_months .='<h3 style="float: left; width: 100%;">'.$loop_year.'</h3>';
     if($year !== $future_range){
       for($month = 1; $month <= 12; $month++){
         $clear_row =  ($current_months_count % 2 == 1 ? false : true);
@@ -352,7 +328,7 @@ function construct_year_view_calendar($future_range, $past_range){
       }
     }
   }
-echo($current_months);
-echo('</div>');
+  echo($current_months);
+  echo('</div>');
 }
 ?>
