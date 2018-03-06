@@ -14,5 +14,7 @@ Test suite, and transition to TDD cycle.
 <li>Ability to export calendar data in CVS format.</li>
 </ol>
 <h3>Prospective additions</h3>
-1. Integration of Google Calendar
-2. Integration of Microsoft Outlook
+<ol>
+  <li>Integration of Google Calendar</li>
+  <li>Integration of Microsoft Outlook</li>
+</ol>
