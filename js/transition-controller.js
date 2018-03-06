@@ -160,10 +160,10 @@ let backToMonth = function(parentElement, firstParent){
   console.log(parentElement.querySelectorAll('[class="selected-day"]'));
   let selectedDays = parentElement.querySelectorAll('[class="selected-day"]');
   
-  for(var i = 0; i < selectedDays.length; i++){
+  /*for(var i = 0; i < selectedDays.length; i++){
     selectedDays[i].classList.remove('selected-day');
     selectedDays[i].className += 'unselected-day';
-  }
+  }*/
   /*
   let navigationBar = document.getElementById('calendar-navigation-bar');
   navigationBar.classList.remove('active-navigation-bar');
@@ -193,7 +193,7 @@ let setBackToMonth = function(parentElement){
 
 let goBackToYear = function(monthComponent, yearComponent, eventComponent){
   monthComponent.style = "display:none;";
-  yearComponent.style="display:block;" ;
+  yearComponent.style = "display:block;" ;
   eventComponent.style="display:none;";
   let calendarNavigationBar = document.getElementById('calendar-navigation-bar');
   calendarNavigationBar.className += ' display-none';
