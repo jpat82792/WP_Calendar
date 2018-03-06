@@ -62,10 +62,10 @@ let selectMonth = function(element, monthComponent, yearComponent, eventComponen
 
 let nextPrevWeek = function(button, monthComponent){
   console.log('nextprevweek');
+    var currentWeek =0;
   if(button.id === 'calendar-next'){
     let month =  monthComponent.querySelector('[class="month"]');
     let weeks = month.children[0].children[0].children;
-    var currentWeek;
     for(var i =0; i < weeks.length; i++){
       if(i !== 0 && weeks[i].dataset.currentWeek === 'true'){
         console.log('found the nextprevweek');
@@ -87,7 +87,7 @@ let nextPrevWeek = function(button, monthComponent){
   else{
     let month =  monthComponent.querySelector('[class="month"]');
     let weeks = month.children[0].children[0].children;
-    var currentWeek;
+
     for(var i = 0; i < weeks.length; i++){
       if(i !== 0 && weeks[i].dataset.currentWeek === 'true'){
         console.log('found the nextprevweek');
@@ -97,7 +97,7 @@ let nextPrevWeek = function(button, monthComponent){
         weeks[i].style = 'display:none;';
       }
     }
-    if((currentWeek-1) !== -1){
+    if((currentWeek) !== 0){
       weeks[currentWeek-1].style = '';
       weeks[currentWeek-1].dataset.currentWeek = true;      
       weeks[currentWeek].dataset.currentWeek = '';    
