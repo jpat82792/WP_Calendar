@@ -17,5 +17,4 @@ function set_calendar_status_bar($current_state){
 </div>
 <?php
 }
-
 ?>
