@@ -179,10 +179,10 @@ let backToMonth = function(parentElement, element){
   }
   let calendarOverviewComponent = document.getElementById('calendar-overview-widget');
   let calendarMonthComponent = document.getElementById('calendar-widget');
-  /*
+  
   let statusBarBack = document.getElementById('calendar-back-button');
   statusBarBack.onclick = function(){goBackToYear(calendarMonthComponent, calendarOverviewComponent);};
-  */
+  
   changeEventsMonth(calendarMonthComponent.querySelector('[class="month"]'));
 }
 
@@ -197,10 +197,9 @@ let setBackToMonth = function(parentElement, element){
 
 let goBackToYear = function(monthComponent, yearComponent, eventComponent){
   monthComponent.style = "display:none;";
-  yearComponent.style = "display:block;" ;
+  yearComponent.style = "display:flex;" ;
   eventComponent.style="display:none;";
-  let calendarNavigationBar = document.getElementById('calendar-navigation-bar');
-  calendarNavigationBar.className += ' display-none';
+  hideCalendarNavigation();
   //TODO: Needs to scroll to whatever month was focused
   let activeMonth = monthComponent.querySelector('[data-month-active="true"]');
   let month = activeMonth.dataset.month;
@@ -220,34 +219,31 @@ let initTransitionController = function(){
   let calendarOverviewComponent = document.getElementById('calendar-overview-widget');
   let calendarMonthComponent = document.getElementById('calendar-widget');
   let eventComponent = document.getElementById('event-widget');
-  //TODO: Uncomment when year view is desired
-  /*for(var month = 0; month < calendarOverviewComponent.children.length; month++){
+  //INIT year view
+  for(var month = 0; month < calendarOverviewComponent.children.length; month++){
     let temp = calendarOverviewComponent.children[month];
     temp.onclick = function(){selectMonth(this, calendarMonthComponent, calendarOverviewComponent, eventComponent)};
-  }*/
-  /*let statusBarBack = document.getElementById('calendar-back-button');
-  /*statusBarBack.onclick = function(){ 
+  }
+  let statusBarBack = document.getElementById('calendar-back-button');
+  statusBarBack.onclick = function(){ 
     goBackToYear(calendarMonthComponent, calendarOverviewComponent, eventComponent);
-  };*/
-  /*statusBarBack.classList.remove('display-none');
-  statusBarBack.className += ' display-none';*/
+  };
+  statusBarBack.classList.remove('display-none');
+  statusBarBack.className += ' display-none';
+  //INIT year view end
   let days = calendarMonthComponent.querySelectorAll('[class="calendar-day"]');
-  console.log("DAYS::");
-  console.log(days);
   //TODO: Uncomment when week view is desired
   for(var day = 0; day < days.length; day++){
     days[day].onclick = function(){
       selectWeek(this);
     }
   }
-  let calendarNavigationBar = document.getElementById('calendar-navigation-bar');
- // calendarNavigationBar.className += ' display-none';
 
   let nextWeekButton = document.getElementById('calendar-next');
   let prevWeekButton = document.getElementById('calendar-prev');
-  //hideCalendarNavigation();
- /* nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
-  prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};*/
+  hideCalendarNavigation();
+  nextWeekButton.onclick = function(){changeMonth(calendarMonthComponent, true);};
+  prevWeekButton.onclick = function(){changeMonth(calendarMonthComponent, false);};
 }
 
 initTransitionController();

@@ -13,7 +13,7 @@
   require_once(plugin_dir_path(__FILE__) . 'calendar-year-view.php');
   require_once(plugin_dir_path(__FILE__) . 'calendar-month-view.php');
 
- /* construct_year_view_calendar(1,1);*/
+  construct_year_view_calendar(1,1);
   construct_month_view(1,1);  
 
   $month_array = ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
